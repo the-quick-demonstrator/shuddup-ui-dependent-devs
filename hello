@@ -1,1 +1,24 @@
-hey
+#!/bin/bash
+
+# Ensure a commit hash is provided as an argument
+if [ -z "$1" ]; then
+    echo "Error: You must provide a commit hash as an argument."
+    echo "Usage: ./revert_to_commit.sh <commit-hash>"
+    exit 1
+fi
+
+# Fetch the current branch name
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+echo "Current branch is: $current_branch"
+commit_hash=$1
+
+# Reset the branch to the specified commit hash
+echo "Resetting branch '$current_branch' to commit $commit_hash..."
+git reset --hard $commit_hash
+
+# Force push the changes to the remote
+echo "Force pushing the changes to remote branch '$current_branch'..."
+git push origin $current_branch --force
+
+echo "Branch '$current_branch' has been reset to commit $commit_hash and force-pushed to the remote."
